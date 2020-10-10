@@ -2,21 +2,26 @@ import m from 'mithril';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 // import 'leaflet-hash';
-import { ziekenhuisIconX, ziekenhuisIconV } from '../utils';
+import { ziekenhuisIconX, ziekenhuisIconV, verzorgingstehuisIcon } from '../utils';
 import { IZiekenhuis } from '../models/ziekenhuis';
 import { MeiosisComponent } from '../services/meiosis';
 import { InfoPanel } from './info-panel';
+import { Feature, Point } from 'geojson';
 
 export const HomePage: MeiosisComponent = () => {
   let map: L.Map;
   let ziekenhuisLayer: L.GeoJSON;
+  let verzorgingshuizenLayer: L.GeoJSON;
+  let vvtLayer: L.GeoJSON;
+  let ggzLayer: L.GeoJSON;
+  let ghzLayer: L.GeoJSON;
   let waterLayer: L.GeoJSON;
   // let selectedHospitalLayer: L.Marker;
 
   return {
     view: ({ attrs: { state, actions } }) => {
       console.log(state);
-      const { hospitals, selectedHospitalId, water } = state.app;
+      const { hospitals, selectedHospitalId, water, verzorgingshuizen, ggz, ghz, vvt } = state.app;
       const selectedHospital = hospitals?.features.filter((f) => f.properties.id === selectedHospitalId).shift();
       const h = selectedHospital?.properties;
 
@@ -24,6 +29,7 @@ export const HomePage: MeiosisComponent = () => {
         waterLayer.clearLayers();
         waterLayer.addData(water);
       }
+
       return [
         m(
           '.container',
@@ -56,6 +62,24 @@ export const HomePage: MeiosisComponent = () => {
               pdokachtergrondkaart.addTo(map);
               // Hash in URL
               // new (L as any).Hash(map);
+
+              const pointToLayer = (feature: Feature<Point, any>, latlng: L.LatLng): L.Marker<any> => {
+                return new L.Marker(latlng, {
+                  icon: verzorgingstehuisIcon,
+                  title: feature.properties.Name,
+                });
+              };
+
+              const onEachFeature = (feature: Feature<Point, any>, layer: L.Layer) => {
+                layer.on('click', () => {
+                  actions.selectFeature(feature as Feature<Point>);
+                });
+              };
+
+              vvtLayer = L.geoJSON(vvt, { pointToLayer, onEachFeature });
+              ghzLayer = L.geoJSON(ghz, { pointToLayer, onEachFeature });
+              ggzLayer = L.geoJSON(ggz, { pointToLayer, onEachFeature });
+              verzorgingshuizenLayer = L.geoJSON(verzorgingshuizen, { pointToLayer, onEachFeature });
 
               ziekenhuisLayer = L.geoJSON<IZiekenhuis>(hospitals, {
                 pointToLayer: (feature, latlng) => {
@@ -108,6 +132,10 @@ export const HomePage: MeiosisComponent = () => {
                   {
                     ziekenhuizen: ziekenhuisLayer,
                     water: waterLayer,
+                    vvt: vvtLayer,
+                    ggz: ggzLayer,
+                    ghz: ghzLayer,
+                    verzorgingshuizen: verzorgingshuizenLayer,
                   }
                 )
                 .addTo(map);

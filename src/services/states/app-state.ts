@@ -1,11 +1,14 @@
-import m from 'mithril';
 import Stream from 'mithril/stream';
 import { IAppModel, UpdateStream } from '../meiosis';
 import { IZiekenhuis } from '../../models/ziekenhuis';
 import ziekenhuizen from '../../data/ziekenhuizen.json';
+import verzorgingshuizen from '../../data/verzorgingshuizen.json';
+import ggz from '../../data/ggz.json';
+import ghz from '../../data/ghz.json';
+import vvt from '../../data/vvt.json';
 import { createBoundingBox, createIcon, processWater, ziekenhuisIconX } from '../../utils';
 import { overpass } from '../overpass';
-import { FeatureCollection, Point } from 'geojson';
+import { FeatureCollection, Feature, Point } from 'geojson';
 
 // Add curline
 ziekenhuizen.features = ziekenhuizen.features.map((z: any) => ({
@@ -22,12 +25,17 @@ export interface IAppStateModel {
   app: Partial<{
     map: L.Map;
     water?: FeatureCollection;
+    vvt: FeatureCollection<Point>;
+    ggz: FeatureCollection<Point>;
+    ghz: FeatureCollection<Point>;
+    verzorgingshuizen: FeatureCollection<Point>;
     hospitals: FeatureCollection<Point, IZiekenhuis>;
     selectedHospitalId: number;
   }>;
 }
 
 export interface IAppStateActions {
+  selectFeature: (f: Feature<Point>) => void;
   selectHospital: (id: number) => void;
   toggleHospitalActivity: (id: number, layer?: L.GeoJSON) => void;
 }
@@ -40,6 +48,10 @@ export interface IAppState {
 export const appStateMgmt = {
   initial: {
     app: {
+      vvt,
+      ggz,
+      ghz,
+      verzorgingshuizen,
       hospitals: ziekenhuizen as GeoJSON.FeatureCollection<GeoJSON.Point, IZiekenhuis>,
       baseline: (ziekenhuizen as GeoJSON.FeatureCollection<GeoJSON.Point, IZiekenhuis>).features.reduce(
         (acc, cur) => {
@@ -57,6 +69,15 @@ export const appStateMgmt = {
   } as IAppStateModel,
   actions: (update, states): IAppStateActions => {
     return {
+      selectFeature: async (f) => {
+        console.log('selectFeature');
+        const lat = f.geometry.coordinates[1];
+        const lng = f.geometry.coordinates[0];
+        const bbox = createBoundingBox(lat, lng, 5000);
+        const geojson = await overpass(bbox);
+        update({ app: { water: processWater(lat, lng, geojson) } });
+        // m.redraw();
+      },
       selectHospital: async (selectedHospitalId) => {
         console.log('selectHospital');
         const {

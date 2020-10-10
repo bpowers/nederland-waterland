@@ -3,6 +3,7 @@ import m from 'mithril';
 import { FeatureCollection } from 'geojson';
 import area from '@turf/area';
 import centroid from '@turf/centroid';
+import verzorgingstehuis from '../assets/verzorgingstehuis.png';
 
 export const formatNumber = (x: number) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
@@ -85,6 +86,14 @@ export const ziekenhuisIconV = L.divIcon({
 export const ziekenhuisIconX = L.divIcon({
   className: 'leaflet-data-marker',
   html: L.Util.template(ziekenhuisSvg, { mapIconColor: '#ff0000' }),
+  iconAnchor: [12, 12],
+  iconSize: [25, 25],
+  popupAnchor: [0, -30],
+});
+
+export const verzorgingstehuisIcon = L.icon({
+  className: 'leaflet-data-marker',
+  iconUrl: verzorgingstehuis,
   iconAnchor: [12, 12],
   iconSize: [25, 25],
   popupAnchor: [0, -30],
