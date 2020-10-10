@@ -10,7 +10,7 @@
     "clean": "rimraf ./public ./.cache ./dist",
     "cleanup": "npm run clean",
     "start": "parcel index.html",
-    "build:domain": "npm run clean && parcel build index.html --out-dir ../../docs --public-url https://erikvullings.github.io/nederland-waterland"
+    "build:domain": "npm run clean && parcel build index.html --out-dir ./docs --public-url https://erikvullings.github.io/nederland-waterland"
   },
   "repository": {
     "type": "git",
