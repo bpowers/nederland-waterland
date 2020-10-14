@@ -147,11 +147,11 @@ export const processWater = (lat: number, lng: number, water?: FeatureCollection
         ? simplifiedDistance(center.geometry.coordinates[1], center.geometry.coordinates[0], lat, lng)
         : 0;
       if (!f.properties) f.properties = {};
-      f.properties.area = Math.round(fArea);
-      f.properties.distance = Math.fround(distance);
+      if (!f.properties.Shape__Area) f.properties.area = Math.round(fArea);
+      f.properties.distance = Math.round(distance);
       return f;
     })
-    .filter((f) => f.properties && f.properties.area > 0);
+    .filter((f) => f.properties && (f.properties.Shape__Area > 0 || f.properties.area > 0));
   water.features = features;
   return water;
 };

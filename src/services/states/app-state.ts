@@ -1,3 +1,4 @@
+import m from 'mithril';
 import Stream from 'mithril/stream';
 import { IAppModel, UpdateStream } from '../meiosis';
 import { IZiekenhuis } from '../../models/ziekenhuis';
@@ -7,8 +8,8 @@ import ggz from '../../data/ggz.json';
 import ghz from '../../data/ghz.json';
 import vvt from '../../data/vvt.json';
 import { createBoundingBox, createIcon, processWater, ziekenhuisIconX } from '../../utils';
-import { overpass } from '../overpass';
 import { FeatureCollection, Feature, Point } from 'geojson';
+import { top10nl } from '..';
 
 // Add curline
 ziekenhuizen.features = ziekenhuizen.features.map((z: any) => ({
@@ -23,21 +24,24 @@ ziekenhuizen.features = ziekenhuizen.features.map((z: any) => ({
 
 export interface IAppStateModel {
   app: Partial<{
-    map: L.Map;
     water?: FeatureCollection;
     vvt: FeatureCollection<Point>;
     ggz: FeatureCollection<Point>;
     ghz: FeatureCollection<Point>;
+    /** Bounding box size */
+    size: number;
+    selectedItem: Feature<Point>;
+    selectedWaterItem: Feature;
     verzorgingshuizen: FeatureCollection<Point>;
     hospitals: FeatureCollection<Point, IZiekenhuis>;
-    selectedHospitalId: number;
   }>;
 }
 
 export interface IAppStateActions {
   selectFeature: (f: Feature<Point>) => void;
-  selectHospital: (id: number) => void;
+  selectWaterFeature: (f: Feature) => void;
   toggleHospitalActivity: (id: number, layer?: L.GeoJSON) => void;
+  setBoundingBoxSizeInMeter: (size: number) => void;
 }
 
 export interface IAppState {
@@ -48,6 +52,7 @@ export interface IAppState {
 export const appStateMgmt = {
   initial: {
     app: {
+      size: 5000,
       vvt,
       ggz,
       ghz,
@@ -69,28 +74,23 @@ export const appStateMgmt = {
   } as IAppStateModel,
   actions: (update, states): IAppStateActions => {
     return {
+      setBoundingBoxSizeInMeter: (size) => update({ app: { size } }),
+      selectWaterFeature: (f) => {
+        update({ app: { selectedWaterItem: f } });
+        m.redraw();
+      },
       selectFeature: async (f) => {
+        const {
+          app: { size = 5000 },
+        } = states();
         console.log('selectFeature');
         const lat = f.geometry.coordinates[1];
         const lng = f.geometry.coordinates[0];
-        const bbox = createBoundingBox(lat, lng, 5000);
-        const geojson = await overpass(bbox);
-        update({ app: { water: processWater(lat, lng, geojson) } });
-        // m.redraw();
-      },
-      selectHospital: async (selectedHospitalId) => {
-        console.log('selectHospital');
-        const {
-          app: { hospitals },
-        } = states();
-        if (!hospitals) return;
-        const selected = hospitals.features.filter((h) => h.properties.id === selectedHospitalId).shift();
-        if (!selected) return;
-        const lat = selected.geometry.coordinates[1];
-        const lng = selected.geometry.coordinates[0];
-        const bbox = createBoundingBox(lat, lng, 5000);
-        const geojson = await overpass(bbox);
-        update({ app: { selectedHospitalId, water: processWater(lat, lng, geojson) } });
+        const bbox = createBoundingBox(lat, lng, size);
+        const geojson = await top10nl(bbox);
+        // const geojson = await overpass(bbox);
+        update({ app: { selectedItem: undefined } });
+        update({ app: { selectedItem: f, water: processWater(lat, lng, geojson) } });
         // m.redraw();
       },
       toggleHospitalActivity: (id: number, layer?: L.GeoJSON) => {

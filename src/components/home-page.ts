@@ -21,15 +21,16 @@ export const HomePage: MeiosisComponent = () => {
   return {
     view: ({ attrs: { state, actions } }) => {
       console.log(state);
-      const { hospitals, selectedHospitalId, water, verzorgingshuizen, ggz, ghz, vvt } = state.app;
-      const selectedHospital = hospitals?.features.filter((f) => f.properties.id === selectedHospitalId).shift();
-      const h = selectedHospital?.properties;
+      const { hospitals, selectedItem, selectedWaterItem, water, verzorgingshuizen, ggz, ghz, vvt } = state.app;
 
       if (water) {
         waterLayer.clearLayers();
         waterLayer.addData(water);
       }
 
+      const props = selectedItem && selectedItem.properties;
+      const waterProps = selectedWaterItem && selectedWaterItem.properties;
+      console.table(waterProps);
       return [
         m(
           '.container',
@@ -98,15 +99,7 @@ export const HomePage: MeiosisComponent = () => {
                         }
                   );
                 },
-                onEachFeature: (feature, layer) => {
-                  layer.on('click', () => {
-                    if (!feature.properties.hasOwnProperty('active')) {
-                      feature.properties.active = true;
-                    }
-                    // selectedHospitalLayer = layer as L.Marker;
-                    actions.selectHospital(feature.properties.id);
-                  });
-                },
+                onEachFeature,
               }).addTo(map);
 
               waterLayer = L.geoJSON(undefined, {
@@ -120,6 +113,9 @@ export const HomePage: MeiosisComponent = () => {
                   }),
                 onEachFeature: (feature, layer) => {
                   layer.bindPopup(JSON.stringify(feature.properties, null, 2));
+                  layer.on('click', () => {
+                    actions.selectWaterFeature(feature);
+                  });
                 },
               }).addTo(map);
 
@@ -149,20 +145,20 @@ export const HomePage: MeiosisComponent = () => {
           },
           [
             m(InfoPanel, { state, actions }),
-            selectedHospital &&
-              h && [
+            props && [
+              m(
+                'h2',
                 m(
-                  'h2',
-                  m(
-                    'label',
-                    m('input[type=checkbox]', {
-                      checked: h.active,
-                      onchange: () => actions.toggleHospitalActivity(h.id, ziekenhuisLayer),
-                    }),
-                    h.locatie
-                  )
-                ),
-              ],
+                  'label',
+                  // m('input[type=checkbox]', {
+                  //   checked: h.active,
+                  //   onchange: () => actions.toggleHospitalActivity(h.id, ziekenhuisLayer),
+                  // }),
+                  props.locatie || props.Name
+                )
+              ),
+            ],
+            m('ul', waterProps && Object.keys(waterProps).map((key) => m('li', `${key}: ${waterProps[key]}`))),
           ]
         ),
       ];
