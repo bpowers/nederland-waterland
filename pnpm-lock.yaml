@@ -5,6 +5,7 @@ dependencies:
   '@turf/helpers': 6.1.4
   '@turf/meta': 6.0.2
   leaflet: 1.7.1
+  leaflet.control.layers.tree: 1.0.2_leaflet@1.7.1
   mithril: 2.0.4
   osm-polygon-features: 0.9.2
   osmtogeojson: 3.0.0-beta.4
@@ -17,7 +18,7 @@ devDependencies:
   parcel: 1.12.4
   rimraf: 3.0.2
   typescript: 4.0.3
-lockfileVersion: 5.1
+lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.10.4:
     dependencies:
@@ -1822,7 +1823,7 @@ packages:
     resolution:
       integrity: sha512-7ItTKOhOZbznhXAQ2g/slGg1PJV5zDO/WdkTwi7UEOJmkvsE32PWvx6mKtDjiMpjnR2CNf6BAD6sSxIlv7ptng==
   /core-js/2.6.11:
-    deprecated: 'core-js@<3 is no longer maintained and not recommended for usage due to the number of issues. Please, upgrade your dependencies to the actual version of core-js@3.'
+    deprecated: core-js@<3 is no longer maintained and not recommended for usage due to the number of issues. Please, upgrade your dependencies to the actual version of core-js@3.
     dev: true
     requiresBuild: true
     resolution:
@@ -3364,6 +3365,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
+  /leaflet.control.layers.tree/1.0.2_leaflet@1.7.1:
+    dependencies:
+      leaflet: 1.7.1
+    dev: false
+    peerDependencies:
+      leaflet: ^1.1.0
+    resolution:
+      integrity: sha512-x/Boki4syfLRuKkpEpkGRaM9MxcktqrLmCaobYWOf/GQN3ND6WSdHC59zkkpx2AsyqLKgbmVUo/IHcchTevDug==
   /leaflet/1.7.1:
     dev: false
     resolution:
@@ -4687,7 +4696,7 @@ packages:
       request-promise-core: 1.1.4_request@2.88.2
       stealthy-require: 1.1.1
       tough-cookie: 2.5.0
-    deprecated: 'request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142'
+    deprecated: request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
     dev: true
     engines:
       node: '>=0.12.0'
@@ -4717,7 +4726,7 @@ packages:
       tough-cookie: 2.5.0
       tunnel-agent: 0.6.0
       uuid: 3.4.0
-    deprecated: 'request has been deprecated, see https://github.com/request/request/issues/3142'
+    deprecated: request has been deprecated, see https://github.com/request/request/issues/3142
     dev: true
     engines:
       node: '>= 6'
@@ -4736,7 +4745,7 @@ packages:
     resolution:
       integrity: sha512-kI5ffTiZWmJaS/huM8wZfEMer1eRd7oJQhDuxeCLe3t7N7mX3z94CN0xPxBQxFYQTSNz9T0i+v6inKqSdK8xrQ==
   /resolve-url/0.2.1:
-    deprecated: 'https://github.com/lydell/resolve-url#deprecated'
+    deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: true
     resolution:
       integrity: sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
@@ -5458,7 +5467,7 @@ packages:
     resolution:
       integrity: sha512-B0yRTzYdUCCn9n+F4+Gh4yIDtMQcaJsmYBDsTSG8g/OejKBodLQ2IHfN3bM7jUsRXndopT7OIXWdYqc1fjmV6g==
   /urix/0.1.0:
-    deprecated: 'Please see https://github.com/lydell/urix#deprecated'
+    deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
     resolution:
       integrity: sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
@@ -5643,6 +5652,7 @@ specifiers:
   '@types/osmtogeojson': ^2.2.29
   cssnano: ^4.1.10
   leaflet: ^1.7.1
+  leaflet.control.layers.tree: 1.0.2
   mithril: ^2.0.4
   osm-polygon-features: ^0.9.2
   osmtogeojson: ^3.0.0-beta.4

@@ -1,5 +1,7 @@
 import m from 'mithril';
-import L from 'leaflet';
+import L, { ILayerTree } from 'leaflet';
+import 'leaflet.control.layers.tree/L.Control.Layers.Tree.css';
+import 'leaflet.control.layers.tree';
 import 'leaflet/dist/leaflet.css';
 // import 'leaflet-hash';
 import { ziekenhuisIconX, ziekenhuisIconV, verzorgingstehuisIcon } from '../utils';
@@ -119,22 +121,30 @@ export const HomePage: MeiosisComponent = () => {
                 },
               }).addTo(map);
 
-              L.control
-                .layers(
+              const baseTree = {
+                label: 'Achtergrondkaart',
+                children: [
+                  { label: 'grijs', layer: pdokachtergrondkaartGrijs },
+                  { label: 'normaal', layer: pdokachtergrondkaart },
+                ],
+              } as ILayerTree;
+              const overlayTree = {
+                label: 'Kaartlagen',
+                children: [
+                  { label: 'Ziekenhuizen', layer: ziekenhuisLayer },
+                  { label: 'Water', layer: waterLayer },
                   {
-                    grijs: pdokachtergrondkaartGrijs,
-                    normaal: pdokachtergrondkaart,
+                    label: 'Tehuizen',
+                    children: [
+                      { label: 'vvt', layer: vvtLayer },
+                      { label: 'ggz', layer: ggzLayer },
+                      { label: 'ghz', layer: ghzLayer },
+                      { label: 'verzorgingshuizen', layer: verzorgingshuizenLayer },
+                    ],
                   },
-                  {
-                    ziekenhuizen: ziekenhuisLayer,
-                    water: waterLayer,
-                    vvt: vvtLayer,
-                    ggz: ggzLayer,
-                    ghz: ghzLayer,
-                    verzorgingshuizen: verzorgingshuizenLayer,
-                  }
-                )
-                .addTo(map);
+                ],
+              } as ILayerTree;
+              L.control.layers.tree(baseTree, overlayTree).addTo(map);
             },
           })
         ),
