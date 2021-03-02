@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE" xmlns:simlin="https://simlin.com/XMILE/v1.0">
+    <header>
+        <name>uitsnede2</name>
+        <vendor>Simlin</vendor>
+        <product version="0.1.0" lang="en">Simlin</product>
+    </header>
+    <sim_specs method="euler" time_units="Months">
+        <start>1</start>
+        <stop>13</stop>
+        <dt reciprocal="true">4</dt>
+    </sim_specs>
+    <model>
+        <variables>
+            <module name="module_1" simlin:model_name="module_1">
+                <connect to="ghost_module.vervulling_basisbehoeften_effect_op_bevlogenheid_gem_sterkte" from="module_1.vervulling_basisbehoeften_effect_op_bevlogenheid_gem_sterkte">
+                </connect>
+            </module>
+            <module name="ghost_module" simlin:model_name="ghost_module">
+                <connect to="ghost_module.vervulling_basisbehoeften_effect_op_bevlogenheid_gem_sterkte" from="module_1.vervulling_basisbehoeften_effect_op_bevlogenheid_gem_sterkte">
+                </connect>
+            </module>
+        </variables>
+        <views>
+            <view isee:show_pages="false" page_width="800" page_height="600" view_type="stock_flow">
+                <module name="Module 1" x="698.75" y="266.5" label_side="bottom"></module>
+                <module name="ghost module" x="738.25" y="406" label_side="bottom"></module>
+                <connector angle="-65">
+                    <from>Module 1</from>
+                    <to>ghost module</to>
+                </connector>
+            </view>
+        </views>
+    </model>
+    <model name="ghost_module">
+        <variables>
+            <aux name="vervulling_basisbehoeften_effect_op_bevlogenheid_gem_sterkte">
+                <eqn>{Enter equation for use when not hooked up to other models}</eqn>
+            </aux>
+            <aux name="extra">
+                <eqn>Vervulling_basisbehoeften_effect_op_Bevlogenheid_Gem_Sterkte*variabele</eqn>
+            </aux>
+            <aux name="variabele">
+                <eqn>2</eqn>
+            </aux>
+        </variables>
+        <views>
+            <view isee:show_pages="false" page_width="800" page_height="600" view_type="stock_flow">
+                <aux name="Vervulling basisbehoeften effect op\nBevlogenheid\nGem Sterkte" x="458" y="210" label_side="bottom"></aux>
+                <aux name="extra" x="469" y="327" label_side="bottom"></aux>
+                <aux name="variabele" x="627" y="265" label_side="bottom"></aux>
+                <connector>
+                    <from>Vervulling basisbehoeften effect op\nBevlogenheid\nGem Sterkte</from>
+                    <to>extra</to>
+                    <pts>
+                        <pt x="459.273" y="218.91"></pt>
+                        <pt x="450" y="310"></pt>
+                        <pt x="460.414" y="329.7"></pt>
+                    </pts>
+                </connector>
+                <connector angle="-177.397">
+                    <from>variabele</from>
+                    <to>extra</to>
+                </connector>
+            </view>
+        </views>
+    </model>
+    <model name="Module_1">
+        <variables>
+            <aux name="input_ondergrens_sterkte_van_vervulling_basisbehoeften_op_bevlogenheid_voor_simulatie">
+                <eqn>Input_ondergrens_sterkte_van_Vervulling_basisbehoeften_op_Bevlogenheid*aanpasfactor</eqn>
+            </aux>
+            <aux name="input_bovengrens_sterkte_van_vervulling_basisbehoeften_op_bevlogenheid_voor_simulatie">
+                <eqn>aanpasfactor*Input_bovengrens_sterkte_van_Vervulling_basisbehoeften_op_Bevlogenheid</eqn>
+            </aux>
+            <aux name="vervulling_basisbehoeften_effect_op_bevlogenheid_gem_sterkte">
+                <eqn>MEAN(Input_bovengrens_sterkte_van_Vervulling_basisbehoeften_op_Bevlogenheid_voor_simulatie, Input_ondergrens_sterkte_van_Vervulling_basisbehoeften_op_Bevlogenheid_voor_simulatie)</eqn>
+            </aux>
+            <aux name="deviatie_voor_sterkte_vervulling_basisbehoeften_effect_op_bevlogenheid">
+                <eqn>Input_bovengrens_sterkte_van_Vervulling_basisbehoeften_op_Bevlogenheid_voor_simulatie-Vervulling_basisbehoeften_effect_op_Bevlogenheid_Gem_Sterkte</eqn>
+            </aux>
+            <aux name="input_bovengrens_sterkte_van_vervulling_basisbehoeften_op_bevlogenheid">
+                <eqn>1</eqn>
+            </aux>
+            <aux name="input_ondergrens_sterkte_van_vervulling_basisbehoeften_op_bevlogenheid">
+                <eqn>0.3</eqn>
+            </aux>
+            <aux name="aanpasfactor">
+                <eqn>0.7</eqn>
+            </aux>
+        </variables>
+        <views>
+            <view isee:show_pages="false" page_width="800" page_height="600" view_type="stock_flow">
+                <aux name="Input ondergrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie" x="402.25" y="183.083" label_side="bottom"></aux>
+                <aux name="Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie" x="645.08" y="209.583" label_side="bottom"></aux>
+                <aux name="Vervulling basisbehoeften effect op\nBevlogenheid\nGem Sterkte" x="811" y="199.75" label_side="bottom"></aux>
+                <aux name="deviatie voor sterkte\nVervulling basisbehoeften\neffect op\nBevlogenheid" x="1031.75" y="192.25" label_side="bottom"></aux>
+                <connector angle="0">
+                    <from>Vervulling basisbehoeften effect op\nBevlogenheid\nGem Sterkte</from>
+                    <to>deviatie voor sterkte\nVervulling basisbehoeften\neffect op\nBevlogenheid</to>
+                </connector>
+                <connector angle="-31.769000000000005">
+                    <from>Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</from>
+                    <to>deviatie voor sterkte\nVervulling basisbehoeften\neffect op\nBevlogenheid</to>
+                </connector>
+                <connector angle="14.384599999999978">
+                    <from>Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</from>
+                    <to>Vervulling basisbehoeften effect op\nBevlogenheid\nGem Sterkte</to>
+                </connector>
+                <connector angle="30.10899999999998">
+                    <from>Input ondergrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</from>
+                    <to>Vervulling basisbehoeften effect op\nBevlogenheid\nGem Sterkte</to>
+                </connector>
+                <aux name="Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid" x="98" y="255.833" label_side="bottom"></aux>
+                <connector angle="-4.1720000000000255">
+                    <from>Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid</from>
+                    <to>Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</to>
+                </connector>
+                <aux name="Input ondergrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid" x="91.5" y="183.083" label_side="bottom"></aux>
+                <connector angle="0.23140300000000025">
+                    <from>Input ondergrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid</from>
+                    <to>Input ondergrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</to>
+                </connector>
+                <aux name="aanpasfactor" x="558" y="305" label_side="right"></aux>
+                <connector angle="102.529">
+                    <from>aanpasfactor</from>
+                    <to>Input ondergrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</to>
+                </connector>
+                <connector angle="47.61559999999997">
+                    <from>aanpasfactor</from>
+                    <to>Input bovengrens sterkte van\nVervulling basisbehoeften\nop Bevlogenheid voor simulatie</to>
+                </connector>
+            </view>
+        </views>
+    </model>
+</xmile>
